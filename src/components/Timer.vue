@@ -1,5 +1,5 @@
 <template>
-  <span>{{ elapsed.toFixed(decimals) }}</span>
+  <span>{{ formattedElapsed }}</span>
 </template>
 
 <script>
@@ -17,8 +17,12 @@
     },
     data () {
       return {
-        elapsed: 0,
-        decimals: 0
+        elapsed: 0
+      }
+    },
+    computed: {
+      formattedElapsed () {
+        return this.elapsed.toFixed(this.decimals)
       }
     },
     methods: {
@@ -39,6 +43,9 @@
       restart () {
         this.clear()
         this.start()
+      },
+      getElapsed () {
+        return this.formattedElapsed
       }
     }
   }

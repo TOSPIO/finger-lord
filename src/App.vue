@@ -2,20 +2,25 @@
   <div id="app">
     <img src="./assets/logo.png">
     <hello></hello>
-    <timer ref="tmr" :decimals="1"></timer>
-    <button type="button" @click="startTimer">Start timer</button>
-    <button type="button" @click="stopTimer">Stop timer</button>
-    <button type="button" @click="clearTimer">Clear timer</button>
-    <button type="button" @click="restartTimer">Restart timer</button>
+    <div class="time">Time elapsed: <timer ref="tmr" :decimals="1"></timer></div>
+    <type-pad @startTyping="startTimer" @allClear="allClear"></type-pad>
+    <div class="result" v-show="hasCleared">All clear in {{ elapsedTime }} seconds!</div>
   </div>
 </template>
 
 <script>
 import Hello from './components/Hello'
 import Timer from './components/Timer'
+import TypePad from './components/TypePad'
 
 export default {
   name: 'app',
+  data () {
+    return {
+      hasCleared: false,
+      clearedInTime: 0
+    }
+  },
   created () {
   },
   methods: {
@@ -25,16 +30,16 @@ export default {
     stopTimer () {
       this.$refs.tmr.stop()
     },
-    clearTimer () {
-      this.$refs.tmr.clear()
-    },
-    restartTimer () {
-      this.$refs.tmr.restart()
+    allClear () {
+      this.stopTimer()
+      this.hasCleared = true
+      this.elapsedTime = this.$refs.tmr.getElapsed()
     }
   },
   components: {
     Hello,
-    Timer
+    Timer,
+    TypePad
   }
 }
 </script>
@@ -47,5 +52,13 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.time {
+    text-align: left;
+}
+
+.result {
+    text-align: left;
 }
 </style>
