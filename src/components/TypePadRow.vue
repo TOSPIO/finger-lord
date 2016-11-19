@@ -105,6 +105,7 @@
 .input input[type=text] {
   color: gray;
   width: 100%;
+  font-family: monospace;
 }
 
 .correct {

@@ -2,11 +2,11 @@
     <div>
         <div class="well timebox">
             Time elapsed: <timer ref="timer"></timer>
+            <span v-show="hasEnded">
+                Too slow you idiot!
+            </span>
         </div>
         <type-pad @startTyping="onStartTyping" @allClear="onAllClear"></type-pad>
-        <div class="well statistics" v-show="hasEnded">
-            Too slow you idiot!
-        </div>
     </div>
 
 </template>
