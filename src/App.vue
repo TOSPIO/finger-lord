@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
     <div class="time">Time elapsed: <timer ref="tmr" :decimals="1"></timer></div>
     <type-pad @startTyping="startTimer" @allClear="allClear"></type-pad>
     <div class="result" v-show="hasCleared">All clear in {{ elapsedTime }} seconds!</div>
@@ -9,7 +7,6 @@
 </template>
 
 <script>
-import Hello from './components/Hello'
 import Timer from './components/Timer'
 import TypePad from './components/TypePad'
 
@@ -37,7 +34,6 @@ export default {
     }
   },
   components: {
-    Hello,
     Timer,
     TypePad
   }

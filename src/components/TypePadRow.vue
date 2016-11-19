@@ -4,13 +4,16 @@
         <span v-for="char in internalText" :class="char.klass">{{ char.char }}</span>
       </div>
       <div class="input">
-        <input type="text" v-model="input" ref="inputBox">
+        <div class="form-group">
+          <input type="text" class="form-control" v-model="input" ref="inputBox" @keydown="onKeyDown" v-bind:disabled="isDisabled">
+        </div>
       </div>
     </div>
   </template>
 
 <script>
   import _ from 'lodash'
+  import Vue from 'vue'
 
   export default {
     name: 'type-pad-row',
@@ -29,6 +32,7 @@
           }
         }),
         input: '',
+        isDisabled: true,
         hasTyped: false
       }
     },
@@ -38,7 +42,6 @@
           this.hasTyped = true
           this.$emit('typed')
         }
-        let allClear = true
         for (let idx = 0; idx < this.internalText.length; ++idx) {
           let textChar = this.internalText[idx]
           let inputChar = newInput[idx]
@@ -46,42 +49,70 @@
             textChar.klass = 'correct'
           } else if (inputChar === undefined) {
             textChar.klass = ''
-            allClear = false
           } else {
             textChar.klass = 'incorrect'
-            allClear = false
           }
         }
-        if (allClear) {
-          this.$emit('allClear')
+        // if (allClear) {
+        //   this.$emit('allClear')
+        // }
+      },
+      isDisabled: function (newValue) {
+        if (!newValue) {
+          Vue.nextTick(() => {
+            this.$refs.inputBox.focus()
+          })
         }
       }
     },
     methods: {
-      focus () {
-        this.$refs.inputBox.focus()
+      activate () {
+        this.isDisabled = false
+      },
+      onKeyDown (evt) {
+        if (evt.code === 'Tab') {
+          evt.preventDefault()
+        }
+        if (evt.code === 'Space') {
+          this.checkAllClear(evt)
+        } else if (evt.code === 'Enter' || evt.code === 'Tab') {
+          this.checkAllClear(evt)
+        }
+      },
+      checkAllClear (evt) {
+        if (this.input.length === this.internalText.length) {
+          evt.preventDefault()
+          this.allClear()
+        }
+      },
+      allClear () {
+        this.isDisabled = true
+        this.$emit('allClear')
       }
     }
   }
 </script>
 
 <style>
-  .row {
+.row {
   border: gray;
   text-align: left;
-  }
+}
 
-  .input input[type=text] {
+.text {
+  font-family: monospace;
+}
+.input input[type=text] {
   color: gray;
   width: 100%;
-  }
+}
 
-  .correct {
+.correct {
   color: green;
-  }
+}
 
-  .incorrect {
-      color: white;
-      background-color: red;
-  }
+.incorrect {
+  color: white;
+  background-color: red;
+}
 </style>

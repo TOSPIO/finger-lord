@@ -1,6 +1,6 @@
 <template>
     <div>
-        <type-pad-row v-for="(row, idx) in rows" :text="row" @allClear="rowClear(row, idx)" @typed="typed" ref="typePadRow"></type-pad-row>
+        <type-pad-row v-for="(row, idx) in rows" :text="row" @allClear="rowClear(row, idx)" @typed="onTyped" ref="typePadRow"></type-pad-row>
     </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
     }
   },
   methods: {
-    typed () {
+    onTyped () {
       if (!this.hasTyped) {
         this.hasTyped = true
         this.$emit('startTyping')
@@ -30,10 +30,17 @@ export default {
     rowClear (row, idx) {
       let nextTypePadRow = this.$refs.typePadRow[idx + 1]
       if (nextTypePadRow !== undefined) {
-        nextTypePadRow.focus()
+        nextTypePadRow.activate()
       } else {
         this.$emit('allClear')
       }
+    }
+  },
+  mounted () {
+    let firstRow = this.$refs.typePadRow[0]
+    if (firstRow !== undefined) {
+      firstRow.activate()
+    } else {
     }
   },
   components: {
