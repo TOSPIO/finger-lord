@@ -13,11 +13,27 @@ export default {
   },
   data () {
     return {
-      rows: [
-        'Hello world',
-        'The quick brown fox jumps over the lazy dog.'
-      ],
+      content: '',
       hasTyped: false
+    }
+  },
+  computed: {
+    rows () {
+      if (this.content === undefined) {
+        return []
+      }
+      return this.content.split('\n')
+    }
+  },
+  watch: {
+    content (newContent) {
+      if (this.$refs.typePadRow !== undefined) {
+        let firstRow = this.$refs.typePadRow[0]
+        if (firstRow !== undefined) {
+          firstRow.activate()
+        } else {
+        }
+      }
     }
   },
   methods: {
@@ -27,6 +43,9 @@ export default {
         this.$emit('startTyping')
       }
     },
+    loadContent (content) {
+      this.content = content
+    },
     rowClear (row, idx) {
       let nextTypePadRow = this.$refs.typePadRow[idx + 1]
       if (nextTypePadRow !== undefined) {
@@ -34,13 +53,6 @@ export default {
       } else {
         this.$emit('allClear')
       }
-    }
-  },
-  mounted () {
-    let firstRow = this.$refs.typePadRow[0]
-    if (firstRow !== undefined) {
-      firstRow.activate()
-    } else {
     }
   },
   components: {

@@ -16,7 +16,7 @@ import Timer from 'components/Timer.vue'
 import TypePad from 'components/TypePad.vue'
 
 export default {
-  name: 'playground',
+  name: 'playground-page',
   data () {
     return {
       hasEnded: false

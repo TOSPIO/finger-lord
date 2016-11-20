@@ -23,9 +23,15 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li class="active">
-                            <router-link to="/playground">Playground</router-link>
-                        </li>
+                        <router-link tag="li" active-class="active" to="/typing">
+                            <a>Typing</a>
+                        </router-link>
+                        <router-link tag="li" active-class="active" to="/passages">
+                            <a>Passages</a>
+                        </router-link>
+                        <router-link tag="li" active-class="active" to="/add-passage">
+                            <a>Add Passage</a>
+                        </router-link>
                         <li>
                             <a href="#">Link <span class="sr-only">(current)</span></a>
 

@@ -6,10 +6,16 @@ import 'bootstrap-material-design'
 import 'bootstrap-material-design/dist/js/ripples'
 
 import Vue from 'vue'
+import VueResource from 'vue-resource'
 import VueRouter from 'vue-router'
+import {VueExt} from './fl-util'
 import router from './routes'
 
+$.material.init()
+
+Vue.use(VueResource)
 Vue.use(VueRouter)
+Vue.use(VueExt)
 
 /* eslint-disable no-new */
 new Vue({

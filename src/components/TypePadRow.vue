@@ -4,9 +4,7 @@
         <span v-for="char in internalText" :class="char.klass">{{ char.char }}</span>
       </div>
       <div class="input">
-        <div class="form-group">
-          <input type="text" class="form-control" v-model="input" ref="inputBox" @keydown="onKeyDown" v-bind:disabled="isDisabled">
-        </div>
+        <input type="text" v-model="input" ref="inputBox" @keydown="onKeyDown" v-bind:disabled="isDisabled">
       </div>
     </div>
   </template>
@@ -25,15 +23,19 @@
     },
     data () {
       return {
-        internalText: _.map(this.text.split(''), c => {
+        input: '',
+        isDisabled: true,
+        hasTyped: false
+      }
+    },
+    computed: {
+      internalText () {
+        return _.map(this.text.split(''), c => {
           return {
             char: c,
             klass: ''
           }
-        }),
-        input: '',
-        isDisabled: true,
-        hasTyped: false
+        })
       }
     },
     watch: {
@@ -97,6 +99,7 @@
 .row {
   border: gray;
   text-align: left;
+  margin-bottom: 20px;
 }
 
 .text {

@@ -11,6 +11,8 @@ var cssSourceMapDev = (env === 'development' && config.dev.cssSourceMap)
 var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap)
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
+var dev_root = "localhost:8080"
+
 module.exports = {
   entry: {
     app: './src/main.js'
@@ -27,7 +29,8 @@ module.exports = {
       'vue$': 'vue/dist/vue',
       'src': path.resolve(__dirname, '../src'),
       'assets': path.resolve(__dirname, '../src/assets'),
-      'components': path.resolve(__dirname, '../src/components')
+      'components': path.resolve(__dirname, '../src/components'),
+      'pages': path.resolve(__dirname, '../src/pages')
     }
   },
   resolveLoader: {
@@ -82,6 +85,13 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'ROOT_URL': JSON.stringify("http://" + dev_root),
+        'API_ROOT': JSON.stringify("http://" + dev_root + "/api"),
+        'WS_ROOT': JSON.stringify("ws://" + dev_root + "/wsapi")
+      }
+    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery'
