@@ -1,11 +1,23 @@
 <template>
   <div>
-    <h3>Select one passage from below to test your typing speed!</h3>
-    <ul class="list-group">
-      <li class="list-group-item" v-for="passage in passages">
-        <router-link :to="`/typing/${passage.id}`">{{ passage.title }}</router-link>
-      </li>
-    </ul>
+    <template v-for="passage in passages">
+      <div class="list-group">
+        <div class="list-group-item">
+          <div class="row-action-primary">
+            <router-link :to="`/typing/${passage.id}`">
+              <i class="material-icons" style="background-color: #009688">{{ passage.content[0] }}</i>
+            </router-link>
+          </div>
+          <div class="row-content">
+            <div class="least-content">15m</div>
+            <h4 class="list-group-item-heading">
+              <router-link :to="`/typing/${passage.id}`">{{ passage.title }}</router-link>
+            </h4>
+            <p class="list-group-item-text">The first 30 words or so of the passage...</p>
+          </div>
+        </div>
+      <div class="list-group-separator"></div>
+    </template>
   </div>
 </template>
 
@@ -22,6 +34,8 @@
         this.passages = response.body
       }, response => {
       })
+    },
+    methods: {
     }
   }
 </script>
