@@ -2,6 +2,7 @@
     <div>
         <div class="well timebox">
             Time elapsed: <timer ref="timer"></timer>
+            Speed: {{ currentSpeed }} kpm
             <span v-show="hasEnded">
                 Too slow you idiot!
             </span>
@@ -19,7 +20,9 @@ export default {
   name: 'typing-page',
   data () {
     return {
-      hasEnded: false
+      hasEnded: false,
+      speedMeter: null,
+      currentSpeed: 0
     }
   },
   created () {
@@ -30,13 +33,24 @@ export default {
     }, response => {
     })
   },
+  computed: {
+  },
   methods: {
     onStartTyping () {
       this.$refs.timer.start()
+      this.speedMeter = setInterval(() => {
+        this.currentSpeed = this.getCurrentSpeed()
+      }, 100)
     },
     onAllClear () {
       this.$refs.timer.stop()
+      clearInterval(this.speedMeter)
       this.hasEnded = true
+    },
+    getCurrentSpeed () {
+      let elapsed = this.$refs.timer.elapsed
+      let correctChars = this.$refs.typePad.correctChars
+      return Math.round(correctChars / elapsed * 60)
     }
   },
   components: {

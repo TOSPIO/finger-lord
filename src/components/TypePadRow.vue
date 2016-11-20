@@ -25,7 +25,8 @@
       return {
         input: '',
         isDisabled: true,
-        hasTyped: false
+        hasTyped: false,
+        correctChars: 0
       }
     },
     computed: {
@@ -36,6 +37,9 @@
             klass: ''
           }
         })
+      },
+      chars () {
+        return this.input.length
       }
     },
     watch: {
@@ -44,17 +48,20 @@
           this.hasTyped = true
           this.$emit('typed')
         }
+        let correctChars = 0
         for (let idx = 0; idx < this.internalText.length; ++idx) {
           let textChar = this.internalText[idx]
           let inputChar = newInput[idx]
           if (textChar.char === inputChar) {
             textChar.klass = 'correct'
+            correctChars++
           } else if (inputChar === undefined) {
             textChar.klass = ''
           } else {
             textChar.klass = 'incorrect'
           }
         }
+        this.correctChars = correctChars
         // if (allClear) {
         //   this.$emit('allClear')
         // }
@@ -74,11 +81,13 @@
       onKeyDown (evt) {
         if (evt.code === 'Tab') {
           evt.preventDefault()
+          return
         }
         if (evt.code === 'Space') {
           this.checkAllClear(evt)
         } else if (evt.code === 'Enter' || evt.code === 'Tab') {
           this.checkAllClear(evt)
+          return
         }
       },
       checkAllClear (evt) {

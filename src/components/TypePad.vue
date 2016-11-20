@@ -14,7 +14,8 @@ export default {
   data () {
     return {
       content: '',
-      hasTyped: false
+      hasTyped: false,
+      currentRow: 0
     }
   },
   computed: {
@@ -23,6 +24,14 @@ export default {
         return []
       }
       return this.content.split('\n')
+    },
+    correctChars () {
+      let correctChars = 0
+      for (let rowIdx = 0; rowIdx < this.rows.length; rowIdx++) {
+        let row = this.$refs.typePadRow[rowIdx]
+        correctChars += row.correctChars
+      }
+      return correctChars
     }
   },
   watch: {
@@ -49,6 +58,7 @@ export default {
     rowClear (row, idx) {
       let nextTypePadRow = this.$refs.typePadRow[idx + 1]
       if (nextTypePadRow !== undefined) {
+        this.currentRow += 1
         nextTypePadRow.activate()
       } else {
         this.$emit('allClear')
