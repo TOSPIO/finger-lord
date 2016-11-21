@@ -2,7 +2,7 @@
 var path = require('path')
 var proxy = require('http-proxy-middleware')
 
-var dev_webserver = 'localhost:3000'
+var dev_backend_server = 'localhost:3000'
 
 module.exports = {
   build: {
@@ -21,12 +21,13 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8080,
+    port: 8090,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: `http://${dev_webserver}`,
+        target: `http://${dev_backend_server}`,
+        changeOrigin: true,
         secure: false,
         pathRewrite: {
           '^/api': '/'

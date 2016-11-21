@@ -5,7 +5,7 @@
         <div class="list-group-item">
           <div class="row-action-primary">
             <router-link :to="`/typing/${passage.id}`">
-              <i class="material-icons" style="background-color: #009688">{{ passage.content[0] }}</i>
+              <i class="material-icons" style="background-color: #009688">{{ passage.title[0] }}</i>
             </router-link>
           </div>
           <div class="row-content">

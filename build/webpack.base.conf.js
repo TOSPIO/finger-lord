@@ -11,7 +11,7 @@ var cssSourceMapDev = (env === 'development' && config.dev.cssSourceMap)
 var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap)
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
-var dev_root = "localhost:8080"
+var dev_root = "localhost:8090"
 
 module.exports = {
   entry: {
