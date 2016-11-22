@@ -1,6 +1,6 @@
 <template>
     <div>
-        <type-pad-row v-for="(row, idx) in rows" :text="row" @allClear="rowClear(row, idx)" @typed="onTyped" ref="typePadRow"></type-pad-row>
+        <type-pad-row v-for="(row, idx) in rows" :text="row" :isLastRow="idx === rows.length - 1" :mode="mode" :isActive="currentRowIdx === idx" @allClear="onRowClear(row, idx)" @typed="onTyped" @moveUp="onMoveUp(row, idx)" ref="typePadRow"></type-pad-row>
     </div>
 </template>
 
@@ -11,11 +11,14 @@ export default {
   name: 'type-pad',
   created () {
   },
+  props: {
+  },
   data () {
     return {
       content: '',
       hasTyped: false,
-      currentRow: 0
+      currentRowIdx: 0,
+      mode: 'western'
     }
   },
   computed: {
@@ -32,6 +35,22 @@ export default {
         correctChars += row.correctChars
       }
       return correctChars
+    },
+    totalInputChars () {
+      let totalInputChars = 0
+      for (let rowIdx = 0; rowIdx < this.rows.length; rowIdx++) {
+        let row = this.$refs.typePadRow[rowIdx]
+        totalInputChars += row.totalInputChars
+      }
+      return totalInputChars
+    },
+    totalValidInputChars () {
+      let totalValidInputChars = 0
+      for (let rowIdx = 0; rowIdx < this.rows.length; rowIdx++) {
+        let row = this.$refs.typePadRow[rowIdx]
+        totalValidInputChars += row.totalValidInputChars
+      }
+      return totalValidInputChars
     }
   },
   watch: {
@@ -46,22 +65,29 @@ export default {
     }
   },
   methods: {
+    loadContent (content) {
+      this.content = content
+    },
+    setMode (mode) {
+      this.mode = mode
+    },
     onTyped () {
       if (!this.hasTyped) {
         this.hasTyped = true
         this.$emit('startTyping')
       }
     },
-    loadContent (content) {
-      this.content = content
-    },
-    rowClear (row, idx) {
+    onRowClear (row, idx) {
+      this.currentRowIdx += 1
       let nextTypePadRow = this.$refs.typePadRow[idx + 1]
-      if (nextTypePadRow !== undefined) {
-        this.currentRow += 1
-        nextTypePadRow.activate()
-      } else {
+      if (nextTypePadRow === undefined) {
         this.$emit('allClear')
+      }
+    },
+    onMoveUp (row, idx) {
+      let prevTypePadRow = this.$refs.typePadRow[idx - 1]
+      if (prevTypePadRow !== undefined) {
+        this.currentRowIdx -= 1
       }
     }
   },

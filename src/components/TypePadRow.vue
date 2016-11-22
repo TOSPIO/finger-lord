@@ -4,7 +4,7 @@
         <span v-for="char in internalText" :class="char.klass">{{ char.char }}</span>
       </div>
       <div class="input">
-        <input type="text" v-model="input" ref="inputBox" @keydown="onKeyDown" v-bind:disabled="isDisabled">
+        <input type="text" v-model="input" ref="inputBox" @keydown="onKeyDown" v-bind:disabled="!isActive">
       </div>
     </div>
   </template>
@@ -19,14 +19,31 @@
       text: {
         type: String,
         default: ''
+      },
+      isLastRow: {
+        type: Boolean,
+        default: false  // If isLastRow, then allClear is emitted on the last char
+                        // instead of an extra space/enter
+      },
+      isActive: {
+        type: Boolean,
+        default: false
+      },
+      mode: {
+        type: String,
+        default: 'western'
       }
     },
     data () {
       return {
         input: '',
-        isDisabled: true,
         hasTyped: false,
         correctChars: 0
+      }
+    },
+    mounted () {
+      if (this.isActive) {
+        this.focus()
       }
     },
     computed: {
@@ -38,8 +55,14 @@
           }
         })
       },
-      chars () {
+      isAllClear () {
+        return this.text.length === this.input.length
+      },
+      totalInputChars () {
         return this.input.length
+      },
+      totalValidInputChars () {
+        return Math.min(this.totalInputChars, this.text.length)
       }
     },
     watch: {
@@ -62,15 +85,22 @@
           }
         }
         this.correctChars = correctChars
-        // if (allClear) {
-        //   this.$emit('allClear')
-        // }
+        if (this.isAllClear) {
+          switch (this.mode) {
+            case 'western':
+              if (this.isLastRow) {
+                this.allClear()
+              }
+              break
+            case 'cjk':
+              this.allClear()
+              break
+          }
+        }
       },
-      isDisabled: function (newValue) {
-        if (!newValue) {
-          Vue.nextTick(() => {
-            this.$refs.inputBox.focus()
-          })
+      isActive: function (newValue) {
+        if (newValue) {
+          this.focus()
         }
       }
     },
@@ -78,27 +108,46 @@
       activate () {
         this.isDisabled = false
       },
+      focus () {
+        Vue.nextTick(() => {
+          this.$refs.inputBox.focus()
+        })
+      },
       onKeyDown (evt) {
         if (evt.code === 'Tab') {
           evt.preventDefault()
           return
         }
-        if (evt.code === 'Space') {
-          this.checkAllClear(evt)
-        } else if (evt.code === 'Enter' || evt.code === 'Tab') {
-          this.checkAllClear(evt)
-          return
+        if (evt.code === 'Backspace') {
+          if (this.$refs.inputBox.selectionStart === 0) {
+            this.moveUp()
+          }
         }
-      },
-      checkAllClear (evt) {
-        if (this.input.length === this.internalText.length) {
-          evt.preventDefault()
-          this.allClear()
+        switch (this.mode) {
+          case 'western':
+            if (!this.isLastRow) {
+              if (evt.code === 'Space' || evt.code === 'Enter') {
+                if (this.isAllClear) {
+                  evt.preventDefault()
+                  this.allClear()
+                }
+              }
+            }
+            break
+          case 'cjk':
+            if (evt.code === 'Enter') {
+              evt.preventDefault()
+            }
+            break
         }
       },
       allClear () {
         this.isDisabled = true
         this.$emit('allClear')
+      },
+      moveUp () {
+        this.isDisabled = true
+        this.$emit('moveUp')
       }
     }
   }

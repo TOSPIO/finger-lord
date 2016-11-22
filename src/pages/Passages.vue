@@ -9,7 +9,7 @@
             </router-link>
           </div>
           <div class="row-content">
-            <div class="least-content">15m</div>
+            <div class="least-content">{{ passage.mode }}</div>
             <h4 class="list-group-item-heading">
               <router-link :to="`/typing/${passage.id}`">{{ passage.title }}</router-link>
             </h4>

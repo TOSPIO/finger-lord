@@ -11,8 +11,6 @@ var cssSourceMapDev = (env === 'development' && config.dev.cssSourceMap)
 var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap)
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 
-var dev_root = "localhost:8090"
-
 module.exports = {
   entry: {
     app: './src/main.js'
@@ -85,13 +83,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'ROOT_URL': JSON.stringify("http://" + dev_root),
-        'API_ROOT': JSON.stringify("http://" + dev_root + "/api"),
-        'WS_ROOT': JSON.stringify("ws://" + dev_root + "/wsapi")
-      }
-    }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery'
