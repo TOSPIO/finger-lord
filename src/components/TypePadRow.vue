@@ -1,10 +1,10 @@
 <template>
     <div class="row">
-      <div class="text">
+      <div class="text" unselectable="on" @selectstart="doNothing" @mousedown="doNothing">
         <span v-for="char in internalText" :class="char.klass">{{ char.char }}</span>
       </div>
       <div class="input">
-        <input type="text" v-model="input" ref="inputBox" @keydown="onKeyDown" v-bind:disabled="!isActive">
+        <input type="text" autocomplete="off" v-model="input" ref="inputBox" @keydown="onKeyDown" @compositionstart="onCompositionStart" @compositionend="onCompositionEnd" @compositionupdate="onCompositionUpdate" v-bind:disabled="!isActive" @cut="doNothing" @copy="doNothing" @paste="doNothing">
       </div>
     </div>
   </template>
@@ -38,7 +38,8 @@
       return {
         input: '',
         hasTyped: false,
-        correctChars: 0
+        correctChars: 0,
+        compositeStatus: 0
       }
     },
     mounted () {
@@ -56,7 +57,7 @@
         })
       },
       isAllClear () {
-        return this.text.length === this.input.length
+        return this.input.length >= this.text.length
       },
       totalInputChars () {
         return this.input.length
@@ -97,6 +98,12 @@
               break
           }
         }
+        let maxLength = this.text.length
+        let exceededSubstring = this.input.substring(this.text.length)
+        if (exceededSubstring.length > 0) {
+          this.input = this.input.substr(0, maxLength)
+          this.$emit('vomit', exceededSubstring)
+        }
       },
       isActive: function (newValue) {
         if (newValue) {
@@ -105,6 +112,9 @@
       }
     },
     methods: {
+      doNothing (evt) {
+        evt.preventDefault()
+      },
       activate () {
         this.isDisabled = false
       },
@@ -114,6 +124,9 @@
         })
       },
       onKeyDown (evt) {
+        if (this.compositeStatus) {
+          return
+        }
         if (evt.code === 'Tab') {
           evt.preventDefault()
           return
@@ -141,6 +154,14 @@
             break
         }
       },
+      onCompositionStart (evt) {
+        this.compositeStatus = 1
+      },
+      onCompositionEnd (evt) {
+        this.compositeStatus = 0
+      },
+      onCompositionUpdate (evt) {
+      },
       allClear () {
         this.isDisabled = true
         this.$emit('allClear')
@@ -162,6 +183,11 @@
 
 .text {
   font-family: monospace;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select:none;
+  user-select:none;
+  -o-user-select:none;
 }
 .input input[type=text] {
   color: gray;

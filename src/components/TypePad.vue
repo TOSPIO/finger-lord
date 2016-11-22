@@ -1,6 +1,6 @@
 <template>
     <div>
-        <type-pad-row v-for="(row, idx) in rows" :text="row" :isLastRow="idx === rows.length - 1" :mode="mode" :isActive="currentRowIdx === idx" @allClear="onRowClear(row, idx)" @typed="onTyped" @moveUp="onMoveUp(row, idx)" ref="typePadRow"></type-pad-row>
+        <type-pad-row v-for="(row, idx) in rows" :text="row" :isLastRow="idx === rows.length - 1" :mode="mode" :isActive="currentRowIdx === idx" @allClear="onRowClear(row, idx)" @typed="onTyped" @moveUp="onMoveUp(row, idx)" @vomit="onVomit(row, idx, $event)" ref="typePadRow"></type-pad-row>
     </div>
 </template>
 
@@ -78,7 +78,7 @@ export default {
       }
     },
     onRowClear (row, idx) {
-      this.currentRowIdx += 1
+      this.currentRowIdx = idx + 1
       let nextTypePadRow = this.$refs.typePadRow[idx + 1]
       if (nextTypePadRow === undefined) {
         this.$emit('allClear')
@@ -87,7 +87,13 @@ export default {
     onMoveUp (row, idx) {
       let prevTypePadRow = this.$refs.typePadRow[idx - 1]
       if (prevTypePadRow !== undefined) {
-        this.currentRowIdx -= 1
+        this.currentRowIdx = idx - 1
+      }
+    },
+    onVomit (row, idx, s) {
+      let nextTypePadRow = this.$refs.typePadRow[idx + 1]
+      if (nextTypePadRow !== undefined) {
+        nextTypePadRow.input = s + nextTypePadRow.input
       }
     }
   },
