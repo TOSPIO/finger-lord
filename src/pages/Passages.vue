@@ -16,6 +16,7 @@
             <p class="list-group-item-text">The first 30 words or so of the passage...</p>
           </div>
         </div>
+      </div>
       <div class="list-group-separator"></div>
     </template>
   </div>
